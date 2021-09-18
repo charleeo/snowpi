@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\ValidatedInput;
 use Illuminate\Validation\ValidationData;
 use Throwable;
 
@@ -37,9 +38,9 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e, Request $request) {
-            if( $e instanceOf ValidationData)
+            if( $e instanceOf ValidatedInput)
     {
-        // perofrm your response
+        return "Error fromhere";
     }
         return parent::render($request, $e);
         });
