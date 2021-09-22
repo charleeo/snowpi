@@ -60,12 +60,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-<<<<<<< HEAD
-        $this->reportable(function (Throwable $e, Request $request) {
-            if( $e instanceOf ValidatedInput)
-    {
-        return "Error fromhere";
-=======
         // handle validation exception
         if($exception instanceof ValidationException) {
             return $this->handleValidationException($exception, $request);
@@ -113,7 +107,6 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest('login');
->>>>>>> ac81546dba254d736411843caaa0f7ab07413dfa
     }
 
     /**

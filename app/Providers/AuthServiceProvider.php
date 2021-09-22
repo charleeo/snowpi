@@ -27,15 +27,16 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // for API auth
-        Passport::routes();
+            Passport::routes();
+        
+            Passport::tokensExpireIn(now()->addDays(15));
+            Passport::refreshTokensExpireIn(now()->addDays(30));
+            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
+            Passport::tokensCan([
+                'admin'=>'Access Admin Backend',
+                'user'=>'Access users App',
+            ]);
 
-        Passport::tokensCan([
-            'get-payments' => 'Get payment records',
-            'get-invoices' => 'Get invoice records',
-        ]);
-
-        Passport::setDefaultScope([
-            'get-payments',
-        ]);
+            Passport::setDefaultScope(['user']);
     }
 }
