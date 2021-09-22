@@ -26,8 +26,16 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        if (!$this->app->routesAreCached()) {
-            Passport::routes();
-        }
+        // for API auth
+        Passport::routes();
+
+        Passport::tokensCan([
+            'get-payments' => 'Get payment records',
+            'get-invoices' => 'Get invoice records',
+        ]);
+
+        Passport::setDefaultScope([
+            'get-payments',
+        ]);
     }
 }
