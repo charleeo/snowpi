@@ -29,3 +29,7 @@ Route::prefix('admin')->group(function(){
     Route::post('/',[AdminController::class,'createAdminUser']);
     Route::post('/login',[AdminController::class,'adminLogin']);
 });
+
+Route::group(['middleware'=>'auth:adminapi','scopes:admin'],function(){
+    Route::get('/admin',[AdminController::class,'authAdmin']);
+});

@@ -59,10 +59,11 @@ class AdminController extends Controller
         try{
             
             if(auth()->guard('admin')->attempt(['email' => request('email'), 'password' => request('password')])){
+        
                 // $user  = User::find(auth()->id());
-                $admin = $request->admin();
+                $user = Auth::guard('admin')->user();
                 
-                $tokenResult = $admin->createToken(config('const.token'));
+                $tokenResult = $user->createToken(config('const.token'));
 
                 if ($request->remember_me) {
                     $tokenResult->expires_at = Carbon::now()->addWeeks(1);
@@ -86,5 +87,10 @@ class AdminController extends Controller
         $res= AppUtils::formatJson($responseMessage,$status,$responseData);
          Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res,'RegisterController@register'));
          return $res; 
+    }
+
+    public function authAdmin(Request $request){
+       $admin = Auth::guard('admin')->user();
+       return $admin;
     }
 }

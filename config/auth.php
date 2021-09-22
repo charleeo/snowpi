@@ -46,6 +46,10 @@ return [
             'provider' => 'users',
         ],
         'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        'adminapi' => [
             'driver' => 'passport',
             'provider' => 'admins',
         ],
@@ -106,7 +110,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-        'admin' => [
+        'admins' => [
             'provider' => 'admins',
             'table' => 'password_resets',
             'expire' => 60,
