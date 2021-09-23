@@ -28,4 +28,5 @@ Route::group(['middleware'=>'auth:api'], function(){
 Route::prefix('admin')->group(function(){
     Route::post('/',[AdminController::class,'createAdminUser']);
     Route::post('/login',[AdminController::class,'adminLogin']);
+    Route::group(['middleware'=>])
 });

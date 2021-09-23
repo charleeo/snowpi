@@ -37,6 +37,6 @@ class AuthServiceProvider extends ServiceProvider
                 'user'=>'Access users App',
             ]);
 
-            Passport::setDefaultScope(['user']);
+            // Passport::setDefaultScope(['user']);
     }
 }

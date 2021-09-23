@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'admin',
+        'passwords' => 'admins',
     ],
 
     /*
@@ -45,6 +45,7 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+
         'admin' => [
             'driver' => 'passport',
             'provider' => 'admins',

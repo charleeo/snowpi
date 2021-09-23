@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminLoginRequest;
 use App\Http\Requests\CreateAdminUserRequest;
 use App\Models\Admin;
+use App\Models\User;
 use App\Services\AppUtils;
 use App\Services\LogUtils;
 use Carbon\Carbon;
@@ -44,25 +46,22 @@ class AdminController extends Controller
          return $res;        
     }
 
-    public function adminLogin(Request $request){
+    public function adminLogin(AdminLoginRequest $request){
         $status=false;
         $error = false;
         $responseData=null;
         $responseMessage = '';
-
-        $data =$request->validate([
-         'email'=>['required','string','email'],
-         'password'=>['required','string'],
-         'remember_me'=>['nullable','boolean']
-        ]);
+        $data = $request->validated();
 
         try{
-            
-            if(auth()->guard('admin')->attempt(['email' => request('email'), 'password' => request('password')])){
+            $user = Admin::where(['email'=>$data['email']])->first();
+            if($user && password_verify($data['password'], $user->password)){
+
+            // }
+            // if(Auth::guard('api:admin')->attempt(['email' => request('email'), 'password' => request('password')])){
                 // $user  = User::find(auth()->id());
-                $admin = $request->admin();
                 
-                $tokenResult = $admin->createToken(config('const.token'));
+                $tokenResult = $user->createToken(config('const.token'));
 
                 if ($request->remember_me) {
                     $tokenResult->expires_at = Carbon::now()->addWeeks(1);
@@ -84,7 +83,11 @@ class AdminController extends Controller
         }
 
         $res= AppUtils::formatJson($responseMessage,$status,$responseData);
-         Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res,'RegisterController@register'));
+         Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res,'AdminController@register'));
          return $res; 
+    }
+
+    public function getAdmin(Request $request){
+     return Auth::guard('admin');
     }
 }
