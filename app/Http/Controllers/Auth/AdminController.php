@@ -54,12 +54,11 @@ class AdminController extends Controller
         $data = $request->validated();
 
         try{
-            $user = Admin::where(['email'=>$data['email']])->first();
-            if($user && password_verify($data['password'], $user->password)){
-
-            // }
-            // if(Auth::guard('api:admin')->attempt(['email' => request('email'), 'password' => request('password')])){
+            
+            if(auth()->guard('admin')->attempt(['email' => request('email'), 'password' => request('password')])){
+        
                 // $user  = User::find(auth()->id());
+                $user = Auth::guard('admin')->user();
                 
                 $tokenResult = $user->createToken(config('const.token'));
 
@@ -87,7 +86,8 @@ class AdminController extends Controller
          return $res; 
     }
 
-    public function getAdmin(Request $request){
-     return Auth::guard('admin');
+    public function authAdmin(Request $request){
+       $admin = Auth::guard('adminapi')->user();
+       return $admin;
     }
 }

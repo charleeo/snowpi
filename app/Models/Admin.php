@@ -11,12 +11,13 @@ use Laravel\Passport\HasApiTokens;
 class Admin extends Authenticatable
 {
     use HasFactory,  HasApiTokens, Notifiable;
+    protected $guard ="admin";
     /**
      * The attributes that are mass assignable.
      *
      * @var string[]
      */
-    protected $guard ='admins';
+    
     protected $fillable = [
         'name',
         'email',

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('users', [RegisterController::class,'registerUser']);
 Route::post('login', [RegisterController::class,'login']);
 
-Route::group(['middleware'=>'auth:api'], function(){
+Route::group(['middleware'=>'auth:sanctum'], function(){
     Route::post('logout', [RegisterController::class,'logout']);
     Route::get('auth-user', [RegisterController::class,'authUser']);
 });
@@ -28,5 +28,10 @@ Route::group(['middleware'=>'auth:api'], function(){
 Route::prefix('admin')->group(function(){
     Route::post('/',[AdminController::class,'createAdminUser']);
     Route::post('/login',[AdminController::class,'adminLogin']);
-    Route::group(['middleware'=>])
 });
+
+Route::group(['middleware'=>'auth:adminapi'],function(){
+    Route::get('/admin',[AdminController::class,'authAdmin']);
+});
+
+
