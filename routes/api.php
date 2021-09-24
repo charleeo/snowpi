@@ -3,19 +3,15 @@
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthRegisterController;
+use App\Http\Controllers\SetupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
+
+Route::prefix('setup')->group(function(){
+    Route::get('/',[SetupController::class,'setupSite']);
+});
 
 Route::post('users', [RegisterController::class,'registerUser']);
 Route::post('login', [RegisterController::class,'login']);
@@ -33,5 +29,7 @@ Route::prefix('admin')->group(function(){
 Route::group(['middleware'=>'auth:adminapi'],function(){
     Route::get('/admin',[AdminController::class,'authAdmin']);
 });
+
+
 
 
