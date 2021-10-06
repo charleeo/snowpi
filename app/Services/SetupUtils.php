@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use App\Models\RestaurantOperator;
+use App\Models\RestaurantRole;
 use App\Models\Role;
 
 class SetupUtils{
@@ -18,5 +20,18 @@ class SetupUtils{
             return true;
         }
         return false;
+    }
+
+    public function createOperatorRoles()
+    {
+        $roles = null;
+       $data = RestaurantRole::Roles;
+       foreach($data as $key=> $d){
+         $roles=  RestaurantRole::updateOrCreate(['assigned_name'=>$key],['name'=>$d, 'assigned_name'=>$key]);
+       }
+       if($roles){
+           return true;
+       }
+       return false;
     }
 }

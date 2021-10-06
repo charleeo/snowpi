@@ -54,11 +54,10 @@ class AdminController extends Controller
         $data = $request->validated();
 
         try{
-            
-            if(auth()->guard('admin')->attempt(['email' => request('email'), 'password' => request('password')])){
-        
-                // $user  = User::find(auth()->id());
-                $user = Auth::guard('admin')->user();
+
+            $user  = Admin::where('email', $request->email)->first();
+
+            if(Hash::check($request->password, $user->password)){      
                 
                 $tokenResult = $user->createToken(config('const.token'));
 

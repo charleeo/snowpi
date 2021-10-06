@@ -13,6 +13,8 @@ class Role extends Model
     protected const Role_name =['Super Admin', 'Logistic Manager','Account','Sales Manager'];
 
  public static function roles(){
-     return array_combine(self::Roles,self::Role_name);
- }
+     return array_combine(self::Roles, self::Role_name);
+    }
 }
+
+
