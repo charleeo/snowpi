@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Services\AppUtils;
+use App\Services\LogUtils;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Throwable;
 
 class RegisterController extends Controller
 {
@@ -69,5 +74,40 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function registerUser(Request $request)
+    {
+        $message= "";
+        $status=false;
+        $responseData=null;
+        $error=null;
+        $request->validate(
+            [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]
+        );
+        try{
+            $user = new User();
+            $user->email = $request->email;
+            $user->name = $request->name;
+            $hashPassword= Hash::make($request->password);
+            $user->password = $hashPassword;
+            $data = $user->save();
+            if($data){
+                $status=true;
+                $responseData = $user;
+                $message="User created";
+            }
+
+        }catch(Throwable $ex){
+            $message = 'There was an error from the server';
+            $error = LogUtils::errorLog($ex);
+        }
+        $res = AppUtils::formatJson($message, $status,$error?$error: $responseData);
+        Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'Creating Restaurants'));
+        return $res;
     }
 }

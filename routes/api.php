@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantMenucontroller;
 use App\Http\Controllers\RestruantOperatorController;
@@ -12,13 +14,19 @@ Route::prefix('setup')->group(function(){
     Route::get('/',[SetupController::class,'setupSite']);
 });
 
-Route::post('users', [RegisterController::class,'registerUser']);
-Route::post('login', [RegisterController::class,'login']);
+Route::prefix('users')->group(function(){
 
-Route::group(['middleware'=>'auth:sanctum'], function(){
-    Route::post('logout', [RegisterController::class,'logout']);
-    Route::get('auth-user', [RegisterController::class,'authUser']);
+  Route::post('create', [RegisterController::class,'registerUser']);
+  Route::post('login', [LoginController::class,'login']);
+  Route::get('profile',[ProfileController::class,'getUserDetails']);
+  Route::post('/',[ProfileController::class,'index']);
+  Route::get('/{id}',[ProfileController::class,'show']);
 });
+
+// Route::group(['middleware'=>'auth:sanctum'], function(){
+//     Route::post('logout', [RegisterController::class,'logout']);
+//     Route::get('auth-user', [RegisterController::class,'authUser']);
+// });
 
 Route::prefix('admin')->group(function(){
     Route::post('/',[AdminController::class,'createAdminUser']);

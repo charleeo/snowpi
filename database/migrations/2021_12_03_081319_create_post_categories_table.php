@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestaurantRolesTable extends Migration
+class CreatePostCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateRestaurantRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('restaurant_roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('assigned_name');
+        Schema::create('categories', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->max(225);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateRestaurantRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('restaurant_roles');
+        Schema::dropIfExists('categories');
     }
 }

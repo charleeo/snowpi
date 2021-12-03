@@ -20,9 +20,9 @@ class RestaurantMenucontroller extends Controller
         return $this->restaurantMenuRepo->store($request);
     }
 
-    public function update(StoreRestaurantMenuRequest $request)
+    public function update(StoreRestaurantMenuRequest $request,$id)
     {
-        return $this->restaurantMenuRepo->update($request);
+        return $this->restaurantMenuRepo->update($request,$id);
     }
 
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDeletedAtToRestaurantsTable extends Migration
+class CreateAuhtorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddDeletedAtToRestaurantsTable extends Migration
      */
     public function up()
     {
-        Schema::table('restaurants', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::create('auhtors', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('email');
+            $table->timestamps();
         });
     }
 
@@ -25,10 +28,6 @@ class AddDeletedAtToRestaurantsTable extends Migration
      */
     public function down()
     {
-        Schema::table('restaurants', function (Blueprint $table) {
-            if(Schema::hasColumn('restaurants','deleted_at')){
-                $table->dropColumn('deleted_at');
-            }
-        });
+        Schema::dropIfExists('auhtors');
     }
 }

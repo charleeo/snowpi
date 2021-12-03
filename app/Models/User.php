@@ -8,16 +8,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Passport\HasApiTokens as PassportHasApiTokens;
+use Laravel\Passport\HasApiTokens;
+
+// use Laravel\Passport\HasApiTokens as PassportHasApiTokens;
 
 class User extends Authenticatable
 {
-    use PassportHasApiTokens;
+    // use PassportHasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
+   use  HasApiTokens;
     /**
      * The attributes that are mass assignable.
      *

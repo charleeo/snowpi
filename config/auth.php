@@ -54,14 +54,7 @@ return [
             'driver' => 'passport',
             'provider' => 'admins',
         ],
-        'restaurant_operator' => [
-            'driver' => 'session',
-            'provider' => 'restaurant_operators',
-        ],
-        'restaurant_operator_api' => [
-            'driver' => 'passport',
-            'provider' => 'restaurant_operators',
-        ],
+        
     ],
 
     /*
@@ -90,11 +83,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
         ],
-        'restaurant_operators' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\RestaurantOperator::class,
-        ],
-
+        
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -129,12 +118,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-        'restaurants' => [
-            'provider' => 'restaurants',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
+
     ],
 
     /*
