@@ -13,7 +13,13 @@ class Post extends Model
         'author_id',
         'body',
         'status',
-        'category_id',
-        'comment_counts'
+        'sub_category_id',
+        'comment_counts',
+        'user_id'
     ];
+
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class,'sub_category_id','id');
+    }
 }

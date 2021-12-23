@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantMenucontroller;
@@ -28,6 +30,13 @@ Route::prefix('users')->group(function(){
 //     Route::get('auth-user', [RegisterController::class,'authUser']);
 // });
 
+Route::prefix('category')->group(function(){
+  Route::post('create',[CategoryController::class,'store']);
+  Route::post('lists',[CategoryController::class,'index']);
+  Route::post('sub-create',[CategoryController::class,'storeSubCategory']);
+  Route::post('sub-lists',[CategoryController::class,'getSubCategory']);
+});
+
 Route::prefix('admin')->group(function(){
     Route::post('/',[AdminController::class,'createAdminUser']);
     Route::post('/login',[AdminController::class,'adminLogin']);
@@ -51,6 +60,15 @@ Route::prefix('restaurant')->group(function(){
     //menus
     Route::post('create-menus',[RestaurantMenucontroller::class,'store']);
     Route::post('update-menus',[RestaurantMenucontroller::class,'update']);
+  });
+});
+
+Route::prefix('posts')->group(function(){
+  Route::post('/all',[PostController::class,'index']);
+  Route::get('/{id}',[PostController::class,'show']);
+  Route::group(['middleware'=> 'auth:api'],function(){
+    Route::post('/',[PostController::class,'store']);
+    Route::post('/update',[PostController::class,'update']);
   });
 });
 

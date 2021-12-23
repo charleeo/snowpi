@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 use Throwable;
 
 class LoginController extends Controller
@@ -62,21 +63,25 @@ class LoginController extends Controller
 
             $user  = User::where('email', $request->email)->first();
 
-            if(Hash::check($request->password, $user->password)){      
+            if($user && Hash::check($request->password, $user->password)){      
+                if ($request->remember_me) {
+                    Passport::personalAccessTokensExpireIn(Carbon::now()->addWeeks(config('const.remember_token_expires_in')));
+                }
                 
                 $tokenResult = $user->createToken(config('const.token'));
 
-                if ($request->remember_me) {
-                    $tokenResult->expires_at = Carbon::now()->addWeeks(1);
-                }
                 $token = $tokenResult->token;
                 $token->save();
-
+                $user->save();
                 $responseData = [
                     'access_token' => $tokenResult->accessToken,
                     'token_type' => 'Bearer',
                     'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
-                    "user" => $user
+                    "user" => [
+                        'email'=>$user->email,
+                        'id'=>$user->id,
+                        'name'=>$user->name
+                        ]
                 ];
                 $status =true;
                 $responseMessage = "Login successfully";

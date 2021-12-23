@@ -12,4 +12,9 @@ class SubCategory extends Model
         'sub_category_name',
         'category_id'
     ];
+
+ public function posts()
+ {
+     return $this->hasMany(Post::class,'sub_category_id','id');
+ }
 }

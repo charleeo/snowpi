@@ -13,13 +13,13 @@ class CreateSubCategoriesTable extends Migration
      */
     public function up()
     {
-        if(Schema::hasTable('sub_categories')){
-            Schema::drop('sub_categories');
-        }
         Schema::create('sub_categories', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('sub_category_name')->max(225);
-            $table->foreignId('category_id')->constrained()->onDelete("CASCADE")->onUpdate('NO ACTION');
+            $table->foreignId('category_id')
+            ->constrained()
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->timestamps();
         });
     }
