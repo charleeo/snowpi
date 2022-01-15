@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class PostService{
+    public const DEFAULTIMAGE = "assets/images/post_images/no_image.png";
     public function store(StorePostRequest $request)
     {
         $responseMessage = '';
@@ -30,6 +31,32 @@ class PostService{
         $validatedData = $request->validated();
         $validatedData['author_id']  = $postAuthor->id;
         $validatedData['user_id']  = $user->id;
+
+        if($request->hasFile('file')){
+            $path = 'assets/images/post_images/';
+            $pathForSmallImages = 'assets/images/post_small_images/';
+            $extensions = ['jpg','png','jpeg','gif'];
+            $size = 2084000;
+            $file = $request->file('file');
+            $postFile = new Post;
+            $fileBigSize = $postFile->uploadSingleFile($file,$extensions,$size,$path,400,800);
+            $fileSmallSize = $postFile->uploadSingleFile($file,$extensions,$size,$pathForSmallImages,150,300);
+            $error = $fileBigSize['error'];
+            $errorFromSmallSize = $fileSmallSize['error'];
+            if($error || $errorFromSmallSize){
+                $responseMessage = $errorFromSmallSize?$errorFromSmallSize:$error;
+                $res = AppUtils::formatJson($responseMessage, $status, $responseData);
+                Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'Store#PostController'));
+                return $res;
+            }
+            
+            $imageFileURL =  $fileBigSize['files_to_db'];
+            $smalImageFileURL =  $fileSmallSize['files_to_db'];
+            // $imageFileURL = implode('|', $fileUploadDetils['files_to_db']);
+            $validatedData['file_url'] = $imageFileURL;
+            $validatedData['file_small_size_url'] = $smalImageFileURL;
+        }
+
          $post = Post::create($validatedData);
          if($post){
              $responseMessage = "Post created";
@@ -63,6 +90,44 @@ class PostService{
          $post = Post::find($request->post_id);  
          $validatedData = $request->validated();
          if($post){
+            if($request->hasFile('file')){
+                $postExistingBigFile = $post['file_url'];
+                $postExistingSmallFile = $post['file_small_size_url'];
+                if($postExistingSmallFile != PostService::DEFAULTIMAGE){
+                    $smallSizeFile= \public_path($postExistingSmallFile);
+                    if(file_exists($smallSizeFile)){
+                        unlink($smallSizeFile);
+                    }
+                    $bigSizeFile= \public_path($postExistingBigFile);
+                    if(file_exists($bigSizeFile)){
+                        unlink($bigSizeFile);
+                    }
+                }
+                $path = 'assets/images/post_images/';
+                $pathForSmallImages = 'assets/images/post_small_images/';
+                $extensions = ['jpg','png','jpeg','gif'];
+                $size = 2084000;
+                $file = $request->file('file');
+                $postFile = new Post;
+
+                $fileBigSize = $postFile->uploadSingleFile($file,$extensions,$size,$path,400,800);
+                $fileSmallSize = $postFile->uploadSingleFile($file,$extensions,$size,$pathForSmallImages,150,300);
+
+                $error = $fileBigSize['error'];
+                $errorFromSmallSize = $fileSmallSize['error'];
+                if($error || $errorFromSmallSize){
+                    $responseMessage = $errorFromSmallSize?$errorFromSmallSize:$error;
+                    $res = AppUtils::formatJson($responseMessage, $status, $responseData);
+                    Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'Store#PostController'));
+                    return $res;
+                }
+                
+                $imageFileURL =  $fileBigSize['files_to_db'];
+                $smalImageFileURL =  $fileSmallSize['files_to_db'];
+                // $imageFileURL = implode('|', $fileUploadDetils['files_to_db']);
+                $validatedData['file_url'] = $imageFileURL;
+                $validatedData['file_small_size_url'] = $smalImageFileURL;
+            }
              $post->update($validatedData);
              $responseMessage = "Post updated";
              $status = true;
@@ -100,6 +165,9 @@ class PostService{
               'posts.title',
               'posts.body',
               'posts.id',
+              'posts.user_id',
+              'posts.file_url',
+              'posts.file_small_size_url',
               'sub_categories.sub_category_name',
               'sub_categories.id as sub_category_id',
               'categories.name',
@@ -145,6 +213,9 @@ class PostService{
               'posts.title',
               'posts.body',
               'posts.id',
+              'posts.file_url',
+              'posts.file_url',
+              'posts.file_small_size_url',
               'sub_categories.sub_category_name',
               'sub_categories.id as sub_category_id',
               'categories.name',
@@ -159,6 +230,34 @@ class PostService{
               $status = true;
               $responseData  = $post;
           };
+        }catch(Throwable $ex){
+        $responseMessage = 'There was an error';
+        $error = LogUtils::errorLog($ex);
+
+      }
+      $res = AppUtils::formatJson($responseMessage, $status, $responseData);
+         Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'Store#PostController'));
+         return $res;
+    }
+
+    public function deletePost(Request $request,$id)
+    {
+        $responseMessage = '';
+        $status = false;
+        $responseData = null;
+        $error = null;
+        $post = null;
+        $query =[];
+        $query[] = ['posts.id', '=', $id];
+        try{
+          $post = DB::table('posts')->where($query)->delete();
+          if($post){
+              $responseMessage ="Post was deleted";
+              $status = true;
+              $responseData  = $post;
+          }else{
+              $responseMessage = "Could not delete post. Please retry";
+          }
         }catch(Throwable $ex){
         $responseMessage = 'There was an error';
         $error = LogUtils::errorLog($ex);

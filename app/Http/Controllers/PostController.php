@@ -32,4 +32,8 @@ class PostController extends Controller
     {
        return $this->postService->show($request,$id);
     }
+    public function delete(Request $request,$id)
+    {
+       return $this->postService->deletePost($request,$id);
+    }
 }

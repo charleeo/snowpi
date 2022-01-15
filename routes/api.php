@@ -69,6 +69,7 @@ Route::prefix('posts')->group(function(){
   Route::group(['middleware'=> 'auth:api'],function(){
     Route::post('/',[PostController::class,'store']);
     Route::post('/update',[PostController::class,'update']);
+    Route::post('/{id}',[PostController::class,'delete']);
   });
 });
 
