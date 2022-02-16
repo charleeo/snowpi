@@ -27,7 +27,7 @@ trait FileUpload{
                 $maxSize =$size/1000;
                     $error= "$fileRealName has a size of $checkedSize kilobytes which is larger than $maxSize kilobytes maximum size ";
                 }
-                $filesToDB = $path.$files;
+                $filesToDB = url('/'). '/'. $path.$files;
                 if(!is_dir($path) AND !file_exists($path)){ //make a dir for
                     mkdir($path,0777,true);
                 }

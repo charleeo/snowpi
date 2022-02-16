@@ -7,10 +7,12 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Throwable;
 
 class PostService{
-    public const DEFAULTIMAGE = "assets/images/post_images/no_image.png";
+    public const DEFAULTIMAGE =  "assets/images/post_images/no_image.png";
+    
     public function store(StorePostRequest $request)
     {
         $responseMessage = '';
@@ -52,7 +54,6 @@ class PostService{
             
             $imageFileURL =  $fileBigSize['files_to_db'];
             $smalImageFileURL =  $fileSmallSize['files_to_db'];
-            // $imageFileURL = implode('|', $fileUploadDetils['files_to_db']);
             $validatedData['file_url'] = $imageFileURL;
             $validatedData['file_small_size_url'] = $smalImageFileURL;
         }
@@ -91,8 +92,8 @@ class PostService{
          $validatedData = $request->validated();
          if($post){
             if($request->hasFile('file')){
-                $postExistingBigFile = $post['file_url'];
-                $postExistingSmallFile = $post['file_small_size_url'];
+                $postExistingBigFile =  str_replace(url('/').'/',"", $post['file_url']);
+                $postExistingSmallFile = str_replace(url('/').'/',"", $post['file_small_size_url']);
                 if($postExistingSmallFile != PostService::DEFAULTIMAGE){
                     $smallSizeFile= \public_path($postExistingSmallFile);
                     if(file_exists($smallSizeFile)){
@@ -249,22 +250,42 @@ class PostService{
         $post = null;
         $query =[];
         $query[] = ['posts.id', '=', $id];
+        DB::beginTransaction();
         try{
-          $post = DB::table('posts')->where($query)->delete();
-          if($post){
-              $responseMessage ="Post was deleted";
-              $status = true;
-              $responseData  = $post;
+          $post = DB::table('posts')->where($query);
+          $postDetails = $post->first();
+          $deleted = $post->delete();
+          if($deleted){
+
+            $file_small_size_url = 
+            str_replace(url('/').'/',"",$postDetails->file_small_size_url);
+            $file_url = str_replace(url('/').'/',"",$postDetails->file_url);
+
+            if($file_small_size_url != PostService::DEFAULTIMAGE && $file_url != PostService::DEFAULTIMAGE){
+                $f1 = \public_path($file_small_size_url);
+                $f2 = \public_path($file_url);
+                if(File::exists($f1)){
+                    unlink($f1);
+                }
+                if(File::exists($f2)){
+                    unlink($f2);
+                }
+            }
+            $responseMessage ="Post was deleted";
+            $status = true;
+            $responseData  = $postDetails;
+            DB::commit();
           }else{
               $responseMessage = "Could not delete post. Please retry";
+              DB::rollBack();
           }
         }catch(Throwable $ex){
         $responseMessage = 'There was an error';
         $error = LogUtils::errorLog($ex);
-
+        DB::rollBack();
       }
       $res = AppUtils::formatJson($responseMessage, $status, $responseData);
-         Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'Store#PostController'));
+         Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'delete#PostController'));
          return $res;
     }
 }

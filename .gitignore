@@ -4,6 +4,8 @@
 /public/storage
 /storage/*.key
 /vendor
+public/assets/images/post_images
+public/assets/images/post_small_images
 .env
 .env.backup
 .phpunit.result.cache
