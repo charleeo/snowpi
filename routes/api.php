@@ -10,6 +10,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantMenucontroller;
 use App\Http\Controllers\RestruantOperatorController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\StuckCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('setup')->group(function(){
@@ -25,16 +26,14 @@ Route::prefix('users')->group(function(){
   Route::get('/{id}',[ProfileController::class,'show']);
 });
 
-// Route::group(['middleware'=>'auth:sanctum'], function(){
-//     Route::post('logout', [RegisterController::class,'logout']);
-//     Route::get('auth-user', [RegisterController::class,'authUser']);
-// });
 
 Route::prefix('category')->group(function(){
   Route::post('create',[CategoryController::class,'store']);
   Route::post('lists',[CategoryController::class,'index']);
   Route::post('sub-create',[CategoryController::class,'storeSubCategory']);
   Route::post('sub-lists',[CategoryController::class,'getSubCategory']);
+  Route::post('stuck/all',[StuckCategoryController::class,'getallCategory']);
+  Route::post('stuck/save',[StuckCategoryController::class,'createAcategory']);
 });
 
 Route::prefix('admin')->group(function(){
@@ -66,11 +65,11 @@ Route::prefix('restaurant')->group(function(){
 Route::prefix('posts')->group(function(){
   Route::post('/all',[PostController::class,'index']);
   Route::get('/{id}',[PostController::class,'show']);
-  Route::group(['middleware'=> 'auth:api'],function(){
+  // Route::group(['middleware'=> 'auth:api'],function(){
     Route::post('/',[PostController::class,'store']);
     Route::post('/update',[PostController::class,'update']);
     Route::post('/{id}',[PostController::class,'delete']);
-  });
+  // });
 });
 
 

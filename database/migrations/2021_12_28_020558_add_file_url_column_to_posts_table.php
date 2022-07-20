@@ -14,7 +14,10 @@ class AddFileUrlColumnToPostsTable extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->text('file_url')->comment("The post images url")->default("assets/images/post_images/no_image.png")->after('comment_counts');
+            $table->text('file_url')
+            // ->default("assets/images/post_images/no_image.png")
+            ->comment("The post images url")
+            ->after('comment_counts');
         });
     }
 

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\StockCategory;
+use App\Models\StockCustomCategory;
+use App\Observers\StockCategoryObserver;
+use App\Observers\StockCustomCategoryObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        StockCategory::observe(StockCategoryObserver::class);
+        StockCustomCategory::observe(StockCustomCategoryObserver::class);
     }
 }
