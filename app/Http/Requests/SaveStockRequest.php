@@ -13,7 +13,7 @@ class SaveStockRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,19 @@ class SaveStockRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'stock_name'  => ['required','string','max:225','min:1'],
+            'stock_image'  => ['nullable','image'],
+            'stock_description' =>['nullable','string','min:20'],
+            'arrival_date'  => ['required','date_format:Y-m-d'],
+            'sold_date' => ['nullable','date_format:Y-m-d'],
+            'cost_price'  => ['nullable','numeric'],
+            'sales_price'  => ['nullable','numeric'],
+            'logistics_cost'  => ['nullable','numeric'],
+            'profit'  => ['nullable','numeric'],
+            'quntity_received'  => ['nullable','numeric'],
+            'quntity_sold'  => ['nullable','numeric'],
+            'quntity_left'  => ['nullable','numeric'],
+            'stock_category_id' => ['required','integer'],
         ];
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantMenucontroller;
 use App\Http\Controllers\RestruantOperatorController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\StuckCategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,5 +73,11 @@ Route::prefix('posts')->group(function(){
   // });
 });
 
+
+Route::group(["middleware" => ['auth:api']], function(){
+  Route::prefix('stock',function(){
+    Route::post('create', [StockController::class,"createAstockRecord"]);
+  });
+});
 
 

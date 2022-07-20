@@ -16,7 +16,7 @@ class CreateStucksTable extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->string('stock_name');
-            $table->string('stock_image');
+            $table->string('stock_image')->nullable();
             $table->text('stock_description')->nullable();
             $table->date('arrival_date');
             $table->date('sold_date')->nullable();
@@ -27,7 +27,8 @@ class CreateStucksTable extends Migration
             $table->string('quntity_received')->default(0);
             $table->string('quntity_sold')->default(0);
             $table->string('quntity_left')->default(0);
-            $table->foreignId('stock_category_id')->default(0);
+            $table->foreignId('stock_category_id');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
