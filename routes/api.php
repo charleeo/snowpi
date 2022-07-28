@@ -74,10 +74,8 @@ Route::prefix('posts')->group(function(){
 });
 
 
-Route::group(["middleware" => ['auth:api']], function(){
-  Route::prefix('stock',function(){
+Route::group(["prefix" => "stock", "middleware" => ['auth:api']], function(){
     Route::post('create', [StockController::class,"createAstockRecord"]);
-  });
 });
 
 
