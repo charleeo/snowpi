@@ -167,6 +167,7 @@ class PostService{
               'posts.body',
               'posts.id',
               'posts.user_id',
+              'posts.created_at',
               'posts.file_url',
               'posts.file_small_size_url',
               'sub_categories.sub_category_name',
@@ -178,15 +179,17 @@ class PostService{
               'authors.id as writer_id'
           )->orderBy('posts.created_at',"DESC");
           if($request->per_page){
-              $posts = $posts->paginate((int) $request->per_page);
+              $responseData = $posts ->latest()-> paginate((int) $request->per_page);
           }else{
-              $posts = $posts->get();
+              $posts = $posts->latest()->get();
+              $responseData = [];
+              $responseData['data'] = $posts;
           }
-          if($posts){
+          if($posts->count() >0){
               $responseMessage ="Post data found for your query";
               $status = true;
           }else $responseMessage = "No post data was found for your query";
-          $responseData  = $posts;
+        //   $responseData  = $posts;
         }catch(Throwable $ex){
         $responseMessage = 'There was an error';
         $error = LogUtils::errorLog($ex);
