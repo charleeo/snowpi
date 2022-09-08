@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','assigned_name'];
-    protected const Roles =['super_admin','logistic_manager','accountant','sales_manager'];
-    protected const Role_name =['Super Admin', 'Logistic Manager','Account','Sales Manager'];
+    protected $guarded = ['id'];
+    protected const Roles =['super_admin','logistic_manager','accountant','sales_manager',"sales_help"];
+    protected const Role_name =['Super Admin', 'Logistic Manager','Account','Sales Manager',"Sales Helper"];
 
  public static function roles(){
      return array_combine(self::Roles, self::Role_name);

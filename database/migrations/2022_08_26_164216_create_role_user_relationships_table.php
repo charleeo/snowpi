@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAuhtorsTable extends Migration
+class CreateRoleUserRelationshipsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAuhtorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('authors', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('email');
+        Schema::create('role_user_relationships', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId("user_id");
+            $table->json("role_ids");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateAuhtorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('authors');
+        Schema::dropIfExists('role_user_relationships');
     }
 }

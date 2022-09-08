@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Author extends Model
+class Warehouse extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','email'];
+    protected  $guarded =   ['id '];
 }

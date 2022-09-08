@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTechnicalAdminsTable extends Migration
+class CreateRegionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateTechnicalAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('technical_admins', function (Blueprint $table) {
+        Schema::create('regions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('roles',['super_admin','site_admin','site_moderator'])->default('super_admin');
-            $table->string('email',225);
-            $table->string('phone',12);
+            $table->foreignId("state_id");
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateTechnicalAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('technical_admins');
+        Schema::dropIfExists('regions');
     }
 }

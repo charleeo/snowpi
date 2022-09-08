@@ -6,16 +6,21 @@ use App\Exceptions\Helpers\Helper;
 use App\Models\User;
 use App\Services\AppUtils;
 use App\Services\LogUtils;
+use App\Services\UsersService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class ProfileController extends Controller
 {
-    public function __construct($id =null)
-    {   if(!$id){
-            return $this->middleware(['auth:api'])->except(['index','show']);
-        }
+  private $service;
+    public function __construct(UsersService $service)
+    {   
+      
+      // if(!$id){
+      //       return $this->middleware(['auth:api'])->except(['index','show']);
+      //   }
+      $this->service  =$service;
     }
     public function getUserDetails(Request $request)
     {  
@@ -98,5 +103,10 @@ class ProfileController extends Controller
       $res = AppUtils::formatJson($responseMessage, $status, $responseData);
          Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res, 'User lists'));
          return $res;
+    }
+
+    public function createUser(Request $request)
+    {
+      return $this->service->createUser($request);
     }
 }

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
+use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
 class LoginController extends Controller
@@ -97,5 +98,24 @@ class LoginController extends Controller
         $res= AppUtils::formatJson($responseMessage,$status,$responseData);
          Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res,'AdminController@register'));
          return $res; 
+    }
+
+    public function socialLogin(Request $request)
+    {
+        $status=false;
+        $error = false;
+        $responseData=null;
+        $responseMessage = '';
+    try{
+        $social= Socialite::driver('facebook')->stateless()->redirect()->getTargetUrl();
+        $responseData = $social;
+        $status=true;
+    }catch(Throwable $ex){
+        $responseMessage = 'Error has occured.';
+        $error = LogUtils::errorLog($ex);
+    }
+    $res= AppUtils::formatJson($responseMessage,$status,$responseData);
+     Helper::write_log(LogUtils::getLogData($request, $error ? $error : $res,'AdminController@register'));
+     return $res;
     }
 }

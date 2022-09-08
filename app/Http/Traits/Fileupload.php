@@ -38,7 +38,7 @@ trait FileUpload{
                 if($error){
                     $file = $filesArray['files_to_db'];
                     $f= \public_path($file);
-                    if(File::exists($f)){
+                    if(file_exists($f)){
                         unlink($f);
                     }
                 }
